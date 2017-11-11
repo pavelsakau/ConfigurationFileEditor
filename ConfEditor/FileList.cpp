@@ -1,6 +1,6 @@
 #include "FileList.h"
 
-FileList::FileList(const wxString& title, wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
+FileList::FileList(const wxString& title, wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
 {
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 

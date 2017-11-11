@@ -151,17 +151,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitmapHelper.cpp" />
+    <ClCompile Include="Colorer.cpp" />
     <ClCompile Include="ConfEditorApp.cpp" />
     <ClCompile Include="FileEditor.cpp" />
+    <ClCompile Include="FileEditorLoader.cpp" />
+    <ClCompile Include="FileLineReader.cpp" />
     <ClCompile Include="FileList.cpp" />
+    <ClCompile Include="LineTokenizer.cpp" />
     <ClCompile Include="Toolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapHelper.h" />
+    <ClInclude Include="Colorer.h" />
     <ClInclude Include="ConfEditorApp.h" />
     <ClInclude Include="FileEditor.h" />
+    <ClInclude Include="FileEditorLoader.h" />
+    <ClInclude Include="FileLineReader.h" />
     <ClInclude Include="FileList.h" />
+    <ClInclude Include="LineTokenizer.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Token.h" />
     <ClInclude Include="Toolbar.h" />
   </ItemGroup>
   <ItemGroup>

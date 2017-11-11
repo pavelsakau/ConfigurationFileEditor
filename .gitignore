@@ -3,3 +3,9 @@ ConfEditor.VC.VC.opendb
 ConfEditor/Debug/
 ConfEditor/x64/
 Debug/
+*.suo
+ConfEditor/Release/
+Release/
+ConfEditor/DeviceDebug.cfg
+ConfEditor/Favorites.cfg
+ConfEditor/SwitchMonitor.cfg

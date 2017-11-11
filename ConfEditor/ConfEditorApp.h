@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/frame.h>
+#include <wx/splitter.h>
 #include <memory>
 #include "Toolbar.h"
 #include "FileList.h"
@@ -15,6 +16,8 @@ class ConfEditorApp : public wxApp
 private:
 
 	wxFrame* window;
+	//wxSplitterWindow* window;
+
 	Toolbar* toolbar;
 	FileList* filelist;
 	FileEditor* fileeditor;
