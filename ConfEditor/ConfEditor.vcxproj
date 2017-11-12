@@ -71,8 +71,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WXWIDGETS)\include;$(WXWIDGETS)\include\msvc</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WXWIDGETS)\include;$(WXWIDGETS)\include\msvc;$(WXWIDGETS)\src\stc;$(WXWIDGETS)\src\stc\scintilla\include;$(WXWIDGETS)\src\stc\scintilla\lexers;$(WXWIDGETS)\src\stc\scintilla\lexlib;$(WXWIDGETS)\src\stc\scintilla\src</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(WXWIDGETS)\lib\vc_lib</LibraryPath>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -81,8 +82,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WXWIDGETS)\include;$(WXWIDGETS)\include\msvc</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(WXWIDGETS)\include;$(WXWIDGETS)\include\msvc;$(WXWIDGETS)\src\stc;$(WXWIDGETS)\src\stc\scintilla\include;$(WXWIDGETS)\src\stc\scintilla\lexers;$(WXWIDGETS)\src\stc\scintilla\lexlib;$(WXWIDGETS)\src\stc\scintilla\src</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;$(WXWIDGETS)\lib\vc_lib</LibraryPath>
+    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -100,6 +102,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
+      <EnableUAC>true</EnableUAC>
+      <UACUIAccess>false</UACUIAccess>
+      <AllowIsolation>true</AllowIsolation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +136,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
+      <EnableUAC>true</EnableUAC>
+      <UACUIAccess>false</UACUIAccess>
+      <AllowIsolation>true</AllowIsolation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,24 +161,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BitmapHelper.cpp" />
-    <ClCompile Include="Colorer.cpp" />
     <ClCompile Include="ConfEditorApp.cpp" />
+    <ClCompile Include="ConfEditorLexer.cpp" />
     <ClCompile Include="FileEditor.cpp" />
     <ClCompile Include="FileEditorLoader.cpp" />
     <ClCompile Include="FileLineReader.cpp" />
     <ClCompile Include="FileList.cpp" />
     <ClCompile Include="LineTokenizer.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Toolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapHelper.h" />
-    <ClInclude Include="Colorer.h" />
     <ClInclude Include="ConfEditorApp.h" />
+    <ClInclude Include="ConfEditorLexer.h" />
     <ClInclude Include="FileEditor.h" />
     <ClInclude Include="FileEditorLoader.h" />
     <ClInclude Include="FileLineReader.h" />
     <ClInclude Include="FileList.h" />
     <ClInclude Include="LineTokenizer.h" />
+    <ClInclude Include="MainWindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Toolbar.h" />

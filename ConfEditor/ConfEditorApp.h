@@ -8,6 +8,7 @@
 #include "Toolbar.h"
 #include "FileList.h"
 #include "FileEditor.h"
+#include "MainWindow.h"
 
 using namespace std;
 
@@ -15,12 +16,14 @@ class ConfEditorApp : public wxApp
 {
 private:
 
-	wxFrame* window;
-	//wxSplitterWindow* window;
+	MainWindow* window;
 
 	Toolbar* toolbar;
 	FileList* filelist;
 	FileEditor* fileeditor;
+
+	wxString cwd;
+	bool isAdminMode;
 public:
 	bool OnInit();
 	int OnExit();

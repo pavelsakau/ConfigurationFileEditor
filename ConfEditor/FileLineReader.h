@@ -10,6 +10,7 @@ class FileLineReader
 {
 public:
 	static vector<wxString> ReadFile(wxString filename);
+	static wxString ReadFileContent(wxString filename);
 };
 
 #endif

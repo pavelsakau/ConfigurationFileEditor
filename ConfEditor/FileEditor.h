@@ -13,65 +13,35 @@ using namespace std;
 class FileEditor : public wxPanel
 {
 private:
-	wxTextCtrl* editor;
-	//wxStyledTextCtrl* editor;
-	//wxRichTextCtrl* editor;
+	wxStyledTextCtrl* editor;
 
 	wxFont DefaultFont;
 
-	wxTextAttr PlainTextAttr;
-	wxTextAttr CommentTextAttr;
-	wxTextAttr IgnoreTextAttr;
-	wxTextAttr WhitespaceTextAttr;
-
 	long cutOrPasteLineNo;
 
-	bool settingStyle;
+	wxString filename;
 
 public:
 
-	enum TextType
-	{
-		PlainText,
-		Comment,
-		Ignore,
-		Whitespace
-	};
-
 	FileEditor(const wxString& title, wxWindow* parent);
-	void AppendText(const wxString& text, const TextType& type);
-
-	void AppendText(const wxString& text, const wxTextAttr& style);
-	void AppendTextNoStyleSave(const wxString& text, const wxTextAttr& style);
-
-	void SetStyle(const long& begin, const long& end, const TextType& type);
-
-	wxTextAttr TextTypeToTextAttr(const TextType& type);
-
-	//void AppendTextDefaultStyle(const wxString& text);
-	void SetTextStyleType(const TextType& type);
 
 	void OnKeyUp(wxKeyEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 
-	void OnTextCut(wxClipboardTextEvent& event);
-	void OnTextPaste(wxClipboardTextEvent& event);
+	void SetText(const wxString& text);
 
-	void OnTextUpdate(wxCommandEvent& event);
+	void Undo();
+	void Redo();
+	void Cut();
+	void Copy();
+	void Paste();
 
-	long GetNumberOfLines();
+	void LoadFile(const wxString& filename);
+	void SaveFile();
+	void ResetFile();
 
-	long XYToPosition(const long& column, const long& line);
-	bool PositionToXY(const long& pos, long& column, long& line);
-
-	long GetLineLength(const long& lineNo);
-
-	void SaveCutOrPasteLineNo();
-
-	void Freeze();
-	void Thaw();
-
-	vector<wxString> GetLinesContent(const long& startLine, const long& endLine);
+	void SavePointLeft(wxStyledTextEvent& event);
+	void SavePointReached(wxStyledTextEvent& event);
 };
 
 #endif

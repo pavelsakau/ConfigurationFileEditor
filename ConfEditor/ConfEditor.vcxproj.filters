@@ -39,7 +39,10 @@
     <ClCompile Include="FileEditorLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Colorer.cpp">
+    <ClCompile Include="ConfEditorLexer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,7 +77,10 @@
     <ClInclude Include="FileEditorLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Colorer.h">
+    <ClInclude Include="ConfEditorLexer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

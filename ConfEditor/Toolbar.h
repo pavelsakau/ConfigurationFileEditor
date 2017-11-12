@@ -15,6 +15,10 @@ public:
 	Toolbar(wxToolBar* toolbar, const wxString& title, wxWindow* parent);
 
 	void OnQuit(wxCommandEvent& event);
+
+	void OnToolbarClick(wxCommandEvent& event);
+
+	void EnableTool(int toolid, bool enable);
 };
 
 #endif

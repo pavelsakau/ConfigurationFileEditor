@@ -11,7 +11,10 @@ private:
 
 public:
 	FileList(const wxString& title, wxWindow* parent);
+	void LoadFilesFromDir(const wxString& directory);
 	void OnQuit(wxCommandEvent& event);
+	void OnResize(wxSizeEvent& event);
+	void ItemDoubleclick(wxListEvent& event);
 };
 
 #endif

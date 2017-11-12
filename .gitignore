@@ -9,3 +9,4 @@ Release/
 ConfEditor/DeviceDebug.cfg
 ConfEditor/Favorites.cfg
 ConfEditor/SwitchMonitor.cfg
+*.bak
