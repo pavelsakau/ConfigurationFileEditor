@@ -13,19 +13,17 @@ using namespace std;
 
 extern LexerModule lmConfEditor;
 
-FileEditor::FileEditor(const wxString& title, wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
+FileEditor::FileEditor(const wxString& title, wxWindow* parent, wxWindow* topWindow) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL), topWindow(topWindow)
 {
 	DefaultFont = wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxString("Courier"));
 
 	cutOrPasteLineNo = -1;
 	filename = wxEmptyString;
+	isReadOnly = false;
 
 	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 	editor = new wxStyledTextCtrl(this, wxID_ANY);
-	//editor = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL | wxTE_PROCESS_TAB);
-	//editor = newwxRichTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL | wxTE_PROCESS_TAB);
 
-	//editor->SetFont(DefaultFont);
 	//editor->StyleClearAll();
 
 	editor->StyleSetFont(wxSTC_STYLE_DEFAULT, DefaultFont);
@@ -51,9 +49,11 @@ FileEditor::FileEditor(const wxString& title, wxWindow* parent) : wxPanel(parent
 	//editor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FileEditor::OnKeyDown), nullptr, this);
 
 	//editor->Connect(wxEVT_KEY_UP, wxKeyEventHandler(FileEditor::OnKeyUp), nullptr, this);
-	////editor->Connect(wxEVT_TEXT_CUT, wxClipboardTextEventHandler(FileEditor::OnTextCut), nullptr, this);
-	////editor->Connect(wxEVT_TEXT_PASTE, wxClipboardTextEventHandler(FileEditor::OnTextPaste), nullptr, this);
-	//editor->Connect(wxEVT_TEXT, wxCommandEventHandler(FileEditor::OnTextUpdate), nullptr, this);
+}
+
+void FileEditor::SetReadOnlyMode(bool mode)
+{
+	isReadOnly = mode;
 }
 
 void FileEditor::SavePointLeft(wxStyledTextEvent& event)
@@ -68,11 +68,22 @@ void FileEditor::SavePointReached(wxStyledTextEvent& event)
 	event.ShouldPropagate();
 }
 
+void FileEditor::SetTopWindowTitle(const wxString& filename)
+{
+	wxString buf(topWindow->GetLabel());
+	buf = buf.substr(0, buf.Find(')') + 1) + wxT(" ") ;
+
+	topWindow->SetLabel(buf + filename);
+}
+
 void FileEditor::LoadFile(const wxString& filename)
 {
 	// TODO check for errors!
 	this->filename = filename;
 	editor->LoadFile(filename);
+	editor->SetReadOnly(isReadOnly);
+
+	SetTopWindowTitle(filename);
 }
 
 void FileEditor::SaveFile()
@@ -84,7 +95,8 @@ void FileEditor::SaveFile()
 		fn_bak.SetExt("bak");
 		bool bakFileRenamed = ::wxRenameFile(fn_cfg.GetFullPath(), fn_bak.GetFullPath(), true);
 		if (!bakFileRenamed) {
-			// TODO show message and write to log
+			wxMessageBox("Can't copy '" + fn_cfg.GetFullPath() + "' content to '" + fn_bak.GetFullPath() + "'", "Error", wxOK, this); 
+			// TODO write to log
 		}
 		editor->SaveFile(fn_cfg.GetFullPath());
 	}
@@ -100,7 +112,8 @@ void FileEditor::ResetFile()
 		if (fn_bak.FileExists()) {
 			editor->LoadFile(fn_bak.GetFullPath());
 		} else {
-			// TODO show message and write to log
+			wxMessageBox("Backup file '" + fn_bak.GetFullPath() + "' does not exist.", "Error", wxOK, this); 
+			// TODO write to log
 		}
 	}
 }
@@ -119,6 +132,7 @@ void FileEditor::OnKeyDown(wxKeyEvent &event)
 	if (event.ControlDown()) {
 		if ((event.GetKeyCode() == 's' || event.GetKeyCode() == 'S')) {
 			wxMessageBox(wxT("Save file"));
+			// TODO call SaveFile() method 
 		}
 	}
 }

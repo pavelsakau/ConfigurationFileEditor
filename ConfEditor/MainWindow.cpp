@@ -9,12 +9,22 @@ void MainWindow::SavePointLeft(wxStyledTextEvent& event)
 {
 	toolbar->EnableTool(wxID_SAVE, true);
 	toolbar->EnableTool(wxID_RESET, true);
+
+	wxString currentLabel = this->GetLabel();
+	if (!currentLabel.EndsWith("*")) {
+		this->SetLabel(currentLabel.Append("*"));
+	}
 }
 
 void MainWindow::SavePointReached(wxStyledTextEvent& event)
 {
 	toolbar->EnableTool(wxID_SAVE, false);
 	toolbar->EnableTool(wxID_RESET, false);
+
+	wxString currentLabel = this->GetLabel();
+	if (currentLabel.EndsWith("*")) {
+		this->SetLabel(currentLabel.substr(0, currentLabel.length() - 1));
+	}
 }
 
 void MainWindow::ItemDoubleclick(wxListEvent& event)

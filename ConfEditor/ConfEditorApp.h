@@ -28,6 +28,7 @@ public:
 	bool OnInit();
 	int OnExit();
 	void OnMainWindowClose(wxCloseEvent& event);
+	void ChooseAppMode();
 
 	~ConfEditorApp();
 };

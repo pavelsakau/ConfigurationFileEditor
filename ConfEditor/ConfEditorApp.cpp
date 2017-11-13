@@ -13,28 +13,7 @@ bool ConfEditorApp::OnInit()
 
 	isAdminMode = false;
 
-	wxString parameters = wxT("");
-	//for (int i = 1; i < this->argc - 1; i++) {
-	//	parameters.Append(this->argv[i]).Append(" ");
-	//}
-	//if (this->argc > 1) {
-	//	parameters.Append(this->argv[this->argc - 1]);
-	//}
-
-	if (this->argc == 1) {
-		parameters = "AskForAdministrator";
-		HINSTANCE result = ShellExecute(NULL, wxT("runas"), this->argv[0], parameters, cwd, SW_NORMAL);
-		if (result > (HINSTANCE)32) {
-			// User accepted UAC prompt (gave permission).
-			// The unprivileged parent should wait for
-			// the privileged child to finish.
-			this->Exit();
-		} else {
-			// User rejected UAC prompt.
-		}
-	} else {
-		isAdminMode = true;
-	}
+	ChooseAppMode();
 
 	wxInitAllImageHandlers();
 	wxString title = isAdminMode ? wxT("Configuration editor (Administrator)") : wxT("Configuration editor (View-only)");
@@ -47,7 +26,8 @@ bool ConfEditorApp::OnInit()
 
 	filelist = new FileList(wxT("File list"), splitter);
 
-	fileeditor = new FileEditor(wxT("File editor"), splitter);
+	fileeditor = new FileEditor(wxT("File editor"), splitter, window);
+	fileeditor->SetReadOnlyMode(!isAdminMode);
 	window->SetFileEditor(fileeditor);
 	window->SetToolbar(toolbar);
 
@@ -55,7 +35,6 @@ bool ConfEditorApp::OnInit()
 
 	window->SetSizer(splitterSizer);
 
-	//fileeditor->LoadFile(wxString("Favorites.cfg"));
 	filelist->LoadFilesFromDir(cwd);
 
 	window->Connect(wxID_SAVE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnSave));
@@ -73,23 +52,36 @@ bool ConfEditorApp::OnInit()
 
 	window->Show();
 
-	//window->Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ConfEditorApp::OnMainWindowClose), nullptr, this);
-	//this->Bind(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(ConfEditorApp::OnMainWindowClose), );
-
 	return true;
+}
+
+void ConfEditorApp::ChooseAppMode()
+{
+	wxString parameters = wxT("");
+
+	if (this->argc == 1) {
+		parameters = "AskForAdministrator";
+		HINSTANCE result = ShellExecute(NULL, wxT("runas"), this->argv[0], parameters, cwd, SW_NORMAL);
+		if (result > (HINSTANCE)32) {
+			// User accepted UAC prompt (gave permission).
+			// The unprivileged parent should wait for
+			// the privileged child to finish.
+			this->Exit();
+		} else {
+			// User rejected UAC prompt.
+		}
+	} else {
+		isAdminMode = true;
+	}
 }
 
 void ConfEditorApp::OnMainWindowClose(wxCloseEvent& event)
 {
-	//window->Close(true);
-	//this->OnExit();
-	//this->ExitMainLoop();
 }
 
 int ConfEditorApp::OnExit()
 {
 	return 0;
-	//window->Close(true);
 }
 
 ConfEditorApp::~ConfEditorApp()
