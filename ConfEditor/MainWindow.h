@@ -12,6 +12,7 @@ class MainWindow : public wxFrame
 {
 	FileEditor* fileeditor;
 	Toolbar* toolbar;
+	bool filesChanged;
 
 public:
 	MainWindow(wxWindow *parent,
@@ -25,6 +26,8 @@ public:
 	void SetFileEditor(FileEditor* fileeditor);
 	void SetToolbar(Toolbar* toolbar);
 	void FileOpen(wxListEvent& event);
+	void SetFilesChanged(const bool& flag);
+	void SendFileEditorCtrlChar(char ch);
 
 	void OnSave(wxCommandEvent& event);
 	void OnReset(wxCommandEvent& event);
@@ -33,6 +36,10 @@ public:
 	void OnCut(wxCommandEvent& event);
 	void OnCopy(wxCommandEvent& event);
 	void OnPaste(wxCommandEvent& event);
+
+	void OnStart(wxCommandEvent& event);
+	void OnStop(wxCommandEvent& event);
+	void OnRestart(wxCommandEvent& event);
 
 	void ItemDoubleclick(wxListEvent& event);
 	void ItemSelected(wxListEvent& event);

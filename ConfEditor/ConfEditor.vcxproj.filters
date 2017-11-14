@@ -109,6 +109,15 @@
     <Image Include="icons\Paste.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="icons\Start.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Stop.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="icons\Restart.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ConfEditor.rc">

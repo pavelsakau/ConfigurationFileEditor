@@ -36,7 +36,7 @@ FileEditor::FileEditor(const wxString& title, wxWindow* parent, wxWindow* topWin
 	editor->StyleSetForeground (wxSTC_C_COMMENT, wxColour(143,188,143)); // ;comment
 	editor->StyleSetForeground (wxSTC_C_COMMENTDOC, wxColour(0,191,255)); // #IGNORE
 
-	editor->StyleSetBackground(wxSTC_C_WORD2, wxColour(255,182,193)); // multiple spaces
+	editor->StyleSetBackground(wxSTC_C_WORD2, wxColour(255,240,245)); // multiple spaces
 
 	sizer->Add(editor, 1, wxEXPAND | wxALL);
 	this->SetSizer(sizer);
@@ -77,7 +77,6 @@ void FileEditor::SetTopWindowTitle(const wxString& filename)
 
 void FileEditor::LoadFile(const wxString& filename)
 {
-	// TODO check for errors!
 	this->filename = filename;
 	editor->SetReadOnly(false);
 	editor->ClearAll();
@@ -87,9 +86,18 @@ void FileEditor::LoadFile(const wxString& filename)
 	SetTopWindowTitle(filename);
 }
 
-void FileEditor::SaveFile()
+void FileEditor::SetSaveSuccess(const bool& flag)
 {
-	// TODO check for errors!
+	saveOpSuccess = flag;
+}
+
+bool FileEditor::GetSaveSuccess()
+{
+	return saveOpSuccess;
+}
+
+bool FileEditor::SaveFile()
+{
 	if (filename.length() > 0) {
 		wxFileName fn_cfg(filename);
 		wxFileName fn_bak(fn_cfg);
@@ -97,24 +105,27 @@ void FileEditor::SaveFile()
 		bool bakFileRenamed = ::wxRenameFile(fn_cfg.GetFullPath(), fn_bak.GetFullPath(), true);
 		if (!bakFileRenamed) {
 			wxMessageBox("Can't copy '" + fn_cfg.GetFullPath() + "' content to '" + fn_bak.GetFullPath() + "'", "Error", wxOK, this); 
-			// TODO write to log
 		}
 		editor->SaveFile(fn_cfg.GetFullPath());
+		return true;
 	}
+	return false;
 }
 
 void FileEditor::ResetFile()
 {
-	// TODO check for errors!
 	if (filename.length() > 0) {
 		wxFileName fn_cfg(filename);
 		wxFileName fn_bak(fn_cfg);
 		fn_bak.SetExt("bak");
-		if (fn_bak.FileExists()) {
+		if (!fn_bak.FileExists() && fn_cfg.FileExists()) {
+			editor->LoadFile(fn_cfg.GetFullPath());
+		} else if (!fn_bak.FileExists() && !fn_cfg.FileExists()) {
+			wxMessageBox("File '" + fn_cfg.GetFullPath() + "' does not exist.", "Error", wxOK, this);
+		} else if (fn_bak.FileExists()) {
 			editor->LoadFile(fn_bak.GetFullPath());
 		} else {
 			wxMessageBox("Backup file '" + fn_bak.GetFullPath() + "' does not exist.", "Error", wxOK, this); 
-			// TODO write to log
 		}
 	}
 }
@@ -131,11 +142,15 @@ void FileEditor::OnKeyUp(wxKeyEvent &event)
 void FileEditor::OnKeyDown(wxKeyEvent &event)
 {
 	if (event.ControlDown()) {
+		wxCommandEvent ev;
+		ev.SetEventType(wxEVT_COMMAND_TOOL_CLICKED);
 		if ((event.GetKeyCode() == 's' || event.GetKeyCode() == 'S')) {
-			SaveFile();
+			ev.SetId(wxID_SAVE);
+			this->AddPendingEvent((const wxEvent&)ev);
 			return;
 		} else if ((event.GetKeyCode() == 'r' || event.GetKeyCode() == 'R')) {
-			ResetFile();
+			ev.SetId(wxID_RESET);
+			this->AddPendingEvent((const wxEvent&)ev);
 			return;
 		} 
 	}

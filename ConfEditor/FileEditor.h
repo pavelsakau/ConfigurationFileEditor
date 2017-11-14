@@ -24,6 +24,7 @@ private:
 	wxString filename;
 
 	bool isReadOnly;
+	bool saveOpSuccess;
 
 public:
 
@@ -35,6 +36,8 @@ public:
 	void SetText(const wxString& text);
 	void SetReadOnlyMode(bool mode);
 	void SetTopWindowTitle(const wxString& filename);
+	void SetSaveSuccess(const bool& flag);
+	bool GetSaveSuccess();
 
 	void Undo();
 	void Redo();
@@ -43,7 +46,7 @@ public:
 	void Paste();
 
 	void LoadFile(const wxString& filename);
-	void SaveFile();
+	bool SaveFile();
 	void ResetFile();
 
 	void SavePointLeft(wxStyledTextEvent& event);

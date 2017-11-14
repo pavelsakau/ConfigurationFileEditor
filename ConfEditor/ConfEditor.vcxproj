@@ -194,7 +194,10 @@
     <Image Include="icons\Cut.ico" />
     <Image Include="icons\Paste.ico" />
     <Image Include="icons\Redo.ico" />
+    <Image Include="icons\Restart.ico" />
     <Image Include="icons\revert.ico" />
+    <Image Include="icons\Start.ico" />
+    <Image Include="icons\Stop.ico" />
     <Image Include="icons\Undo.ico" />
   </ItemGroup>
   <ItemGroup>

@@ -18,9 +18,13 @@ bool ConfEditorApp::OnInit()
 	wxInitAllImageHandlers();
 	wxString title = isAdminMode ? wxT("Configuration editor (Administrator)") : wxT("Configuration editor (View-only)");
 	window = new MainWindow(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1250, 600));
-	toolbar = new Toolbar(window->CreateToolBar(wxTB_DEFAULT_STYLE, wxID_ANY, wxT("Toolbar")), wxT("Toolbar"), window);
+	//toolbar = new Toolbar(window->CreateToolBar(wxTB_DEFAULT_STYLE, wxID_ANY, wxT("Toolbar")), wxT("Toolbar"), window);
+	toolbar = new Toolbar(window, wxT("Toolbar"));
 
-	wxBoxSizer* splitterSizer = new wxBoxSizer(wxHORIZONTAL);
+	toolbar->UpdateServerButtons();
+
+	wxBoxSizer* splitterSizer = new wxBoxSizer(wxVERTICAL);
+	splitterSizer->Add((wxWindow*)toolbar, 0, wxEXPAND | wxALIGN_TOP);
 	wxSplitterWindow* splitter = new wxSplitterWindow(window, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_THIN_SASH);
 	splitterSizer->Add(splitter, 1, wxEXPAND | wxALL);
 
@@ -30,6 +34,7 @@ bool ConfEditorApp::OnInit()
 	fileeditor->SetReadOnlyMode(!isAdminMode);
 	window->SetFileEditor(fileeditor);
 	window->SetToolbar(toolbar);
+	window->SetFilesChanged(false);
 
 	splitter->SplitVertically(filelist, fileeditor, window->GetRect().GetWidth()*0.1);
 
@@ -45,6 +50,10 @@ bool ConfEditorApp::OnInit()
 	window->Connect(wxID_CUT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnCut));
 	window->Connect(wxID_COPY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnCopy));
 	window->Connect(wxID_PASTE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnPaste));
+
+	window->Connect(wxID_FILE1, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnStart));
+	window->Connect(wxID_FILE2, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnStop));
+	window->Connect(wxID_FILE3, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnRestart));
 
 	//window->Connect(wxID_ANY, wxEVT_LIST_ITEM_ACTIVATED, wxListEventHandler(MainWindow::ItemDoubleclick)); remove dblclick event from file open
 	window->Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxListEventHandler(MainWindow::ItemSelected));

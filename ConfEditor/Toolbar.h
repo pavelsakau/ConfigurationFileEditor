@@ -7,18 +7,18 @@
 
 using namespace std;
 
-class Toolbar : public wxFrame
+class Toolbar : public wxPanel
 {
 private:
 	wxToolBar* toolbar;
+	wxToolBar* rightSideToolbar;
 public:
-	Toolbar(wxToolBar* toolbar, const wxString& title, wxWindow* parent);
-
-	void OnQuit(wxCommandEvent& event);
+	Toolbar(wxWindow* parent, const wxString& title);
 
 	void OnToolbarClick(wxCommandEvent& event);
-
 	void EnableTool(int toolid, bool enable);
+	void ShowFilesChangedText(bool flag);
+	bool UpdateServerButtons();
 };
 
 #endif

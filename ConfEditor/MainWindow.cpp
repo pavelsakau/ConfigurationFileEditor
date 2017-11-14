@@ -5,6 +5,12 @@ MainWindow::MainWindow(wxWindow* parent, wxWindowID id, const wxString& title, c
 {
 }
 
+void MainWindow::SetFilesChanged(const bool& flag)
+{
+	filesChanged = flag;
+	toolbar->ShowFilesChangedText(filesChanged);
+}
+
 void MainWindow::OnClose(wxCloseEvent& event)
 {
 	wxString currentLabel = this->GetLabel();
@@ -72,12 +78,22 @@ void MainWindow::SetToolbar(Toolbar* toolbar)
 	this->toolbar = toolbar;
 }
 
+void MainWindow::SendFileEditorCtrlChar(char ch)
+{
+	wxKeyEvent ev;
+	ev.SetControlDown(true);
+	ev.m_keyCode = ch;
+	fileeditor->OnKeyDown(ev);
+}
+
 void MainWindow::OnSave(wxCommandEvent& event) {
-	fileeditor->SaveFile();
+	SetFilesChanged(fileeditor->SaveFile());
 }
 
 void MainWindow::OnReset(wxCommandEvent& event) {
-	fileeditor->ResetFile();
+	if (wxMessageBox(wxT("Are you sure?"), "Revert", wxYES_NO) == wxYES) {
+		fileeditor->ResetFile();
+	}
 }
 
 void MainWindow::OnUndo(wxCommandEvent& event) {
@@ -98,4 +114,18 @@ void MainWindow::OnCopy(wxCommandEvent& event) {
 
 void MainWindow::OnPaste(wxCommandEvent& event) {
 	fileeditor->Paste();
+}
+
+void MainWindow::OnStart(wxCommandEvent& event) {
+	SetFilesChanged(false);
+	//wxMessageBox(wxT("Start server"));
+}
+
+void MainWindow::OnStop(wxCommandEvent& event) {
+	//wxMessageBox(wxT("Stop server"));
+}
+
+void MainWindow::OnRestart(wxCommandEvent& event) {
+	SetFilesChanged(false);
+	//wxMessageBox(wxT("Restart server"));
 }
