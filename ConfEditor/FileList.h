@@ -8,6 +8,7 @@ class FileList : public wxPanel
 {
 private:
 	wxListCtrl* item_list;
+	wxArrayString files;
 
 public:
 	FileList(const wxString& title, wxWindow* parent);
@@ -15,6 +16,8 @@ public:
 	void OnQuit(wxCommandEvent& event);
 	void OnResize(wxSizeEvent& event);
 	void ItemDoubleclick(wxListEvent& event);
+	void ItemSelected(wxListEvent& event);
+	void SetWidthToMatchMaxLen();
 };
 
 #endif

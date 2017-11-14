@@ -17,13 +17,13 @@ Toolbar::Toolbar(wxToolBar* toolbar, const wxString& title, wxWindow* parent) : 
 
 	wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
 
-	this->toolbar->AddTool(wxID_SAVE, wxT("Save"), save, wxT("Save file"));
-	this->toolbar->AddTool(wxID_RESET, wxT("Revert"), revert, wxT("Revert file"));
-	this->toolbar->AddTool(wxID_UNDO, wxT("Undo"), undo, wxT("Undo changes"));
-	this->toolbar->AddTool(wxID_REDO, wxT("Redo"), redo, wxT("Redo changes"));
-	this->toolbar->AddTool(wxID_CUT, wxT("Cut"), cut, wxT("Cut text"));
-	this->toolbar->AddTool(wxID_COPY, wxT("Copy"), copy, wxT("Copy text"));
-	this->toolbar->AddTool(wxID_PASTE, wxT("Paste"), paste, wxT("Paste text"));
+	this->toolbar->AddTool(wxID_SAVE, wxT("Save"), save, wxT("Save file (Ctrl+S)"));
+	this->toolbar->AddTool(wxID_RESET, wxT("Revert"), revert, wxT("Revert file (Ctrl+R)"));
+	this->toolbar->AddTool(wxID_UNDO, wxT("Undo"), undo, wxT("Undo changes (Ctrl+Z)"));
+	this->toolbar->AddTool(wxID_REDO, wxT("Redo"), redo, wxT("Redo changes (Ctrl+Y)"));
+	this->toolbar->AddTool(wxID_CUT, wxT("Cut"), cut, wxT("Cut text (Ctrl+X)"));
+	this->toolbar->AddTool(wxID_COPY, wxT("Copy"), copy, wxT("Copy text (Ctrl+C)"));
+	this->toolbar->AddTool(wxID_PASTE, wxT("Paste"), paste, wxT("Paste text (Ctrl+V)"));
 
 	this->toolbar->Connect(wxID_SAVE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(Toolbar::OnToolbarClick));
 	this->toolbar->Connect(wxID_RESET, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(Toolbar::OnToolbarClick));
@@ -41,9 +41,6 @@ Toolbar::Toolbar(wxToolBar* toolbar, const wxString& title, wxWindow* parent) : 
 	vbox->Add(this->toolbar, 0, wxEXPAND);
 
 	SetSizer(vbox);
-
-	//Connect(wxID_EXIT, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(Toolbar::OnQuit), this);
-	//Connect(wxID_EXIT, wxEVT_CLOSE_WINDOW, wxCommandEventHandler(Toolbar::OnQuit), this);
 }
 
 void Toolbar::OnQuit(wxCommandEvent& event) {

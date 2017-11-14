@@ -5,6 +5,19 @@ MainWindow::MainWindow(wxWindow* parent, wxWindowID id, const wxString& title, c
 {
 }
 
+void MainWindow::OnClose(wxCloseEvent& event)
+{
+	wxString currentLabel = this->GetLabel();
+	if (currentLabel.EndsWith("*")) {
+		int res = wxMessageBox(wxT("Do you want to save changes before exit?"), "Warning", wxYES_NO);
+		if (res == wxYES) {
+			fileeditor->SaveFile();
+		}
+	}
+	event.Skip();
+	event.ShouldPropagate();
+}
+
 void MainWindow::SavePointLeft(wxStyledTextEvent& event)
 {
 	toolbar->EnableTool(wxID_SAVE, true);
@@ -27,9 +40,26 @@ void MainWindow::SavePointReached(wxStyledTextEvent& event)
 	}
 }
 
+void MainWindow::FileOpen(wxListEvent& event)
+{
+	wxString currentLabel = this->GetLabel();
+	if (currentLabel.EndsWith("*")) {
+		int res = wxMessageBox(wxT("Do you want to save changes for '") + event.GetText() + "'?", "Warning", wxYES_NO);
+		if (res == wxYES) {
+			fileeditor->SaveFile();
+		}
+	}
+	fileeditor->LoadFile(*(wxString *)event.GetData());
+}
+
+void MainWindow::ItemSelected(wxListEvent& event)
+{
+	FileOpen(event);
+}
+
 void MainWindow::ItemDoubleclick(wxListEvent& event)
 {
-	fileeditor->LoadFile(event.GetText());
+	FileOpen(event);
 }
 
 void MainWindow::SetFileEditor(FileEditor* fileeditor)

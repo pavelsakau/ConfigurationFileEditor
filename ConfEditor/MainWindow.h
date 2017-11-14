@@ -24,6 +24,7 @@ public:
 
 	void SetFileEditor(FileEditor* fileeditor);
 	void SetToolbar(Toolbar* toolbar);
+	void FileOpen(wxListEvent& event);
 
 	void OnSave(wxCommandEvent& event);
 	void OnReset(wxCommandEvent& event);
@@ -34,8 +35,11 @@ public:
 	void OnPaste(wxCommandEvent& event);
 
 	void ItemDoubleclick(wxListEvent& event);
+	void ItemSelected(wxListEvent& event);
 	void SavePointLeft(wxStyledTextEvent& event);
 	void SavePointReached(wxStyledTextEvent& event);
+
+	void OnClose(wxCloseEvent& event);
 };
 
 #endif

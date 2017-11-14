@@ -31,11 +31,12 @@ bool ConfEditorApp::OnInit()
 	window->SetFileEditor(fileeditor);
 	window->SetToolbar(toolbar);
 
-	splitter->SplitVertically(filelist, fileeditor, window->GetRect().GetWidth()*0.25);
+	splitter->SplitVertically(filelist, fileeditor, window->GetRect().GetWidth()*0.1);
 
 	window->SetSizer(splitterSizer);
 
 	filelist->LoadFilesFromDir(cwd);
+	filelist->SetWidthToMatchMaxLen();
 
 	window->Connect(wxID_SAVE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnSave));
 	window->Connect(wxID_RESET, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnReset));
@@ -45,11 +46,15 @@ bool ConfEditorApp::OnInit()
 	window->Connect(wxID_COPY, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnCopy));
 	window->Connect(wxID_PASTE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnPaste));
 
-	window->Connect(wxID_ANY, wxEVT_LIST_ITEM_ACTIVATED, wxListEventHandler(MainWindow::ItemDoubleclick));
+	//window->Connect(wxID_ANY, wxEVT_LIST_ITEM_ACTIVATED, wxListEventHandler(MainWindow::ItemDoubleclick)); remove dblclick event from file open
+	window->Connect(wxID_ANY, wxEVT_LIST_ITEM_SELECTED, wxListEventHandler(MainWindow::ItemSelected));
 
 	window->Connect(wxID_ANY, wxEVT_STC_SAVEPOINTLEFT, wxStyledTextEventHandler(MainWindow::SavePointLeft));
 	window->Connect(wxID_ANY, wxEVT_STC_SAVEPOINTREACHED, wxStyledTextEventHandler(MainWindow::SavePointReached));
+	window->Connect(wxID_ANY, wxEVT_CLOSE_WINDOW, wxCloseEventHandler(MainWindow::OnClose));
 
+	window->Center();
+	window->Raise();
 	window->Show();
 
 	return true;

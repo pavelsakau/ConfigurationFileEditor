@@ -33,11 +33,10 @@ FileEditor::FileEditor(const wxString& title, wxWindow* parent, wxWindow* topWin
 
 	editor->SetLexer(lmConfEditor.GetLanguage());
 
-	editor->StyleSetForeground (wxSTC_C_COMMENT, wxColour(0,155,0));
-	editor->StyleSetForeground (wxSTC_C_COMMENTDOC, wxColour(0,0,155));
+	editor->StyleSetForeground (wxSTC_C_COMMENT, wxColour(143,188,143)); // ;comment
+	editor->StyleSetForeground (wxSTC_C_COMMENTDOC, wxColour(0,191,255)); // #IGNORE
 
-	editor->StyleSetBackground(wxSTC_C_WORD, wxColour(255,255,255));
-	editor->StyleSetBackground(wxSTC_C_WORD2, wxColour(155,0,0));
+	editor->StyleSetBackground(wxSTC_C_WORD2, wxColour(255,182,193)); // multiple spaces
 
 	sizer->Add(editor, 1, wxEXPAND | wxALL);
 	this->SetSizer(sizer);
@@ -45,9 +44,7 @@ FileEditor::FileEditor(const wxString& title, wxWindow* parent, wxWindow* topWin
 	editor->Connect(wxID_ANY, wxEVT_STC_SAVEPOINTLEFT, wxStyledTextEventHandler(FileEditor::SavePointLeft), nullptr, this);
 	editor->Connect(wxID_ANY, wxEVT_STC_SAVEPOINTREACHED, wxStyledTextEventHandler(FileEditor::SavePointReached), nullptr, this);
 
-	// TODO ask for ctrl+s functionality
-	//editor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FileEditor::OnKeyDown), nullptr, this);
-
+	editor->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(FileEditor::OnKeyDown), nullptr, this);
 	//editor->Connect(wxEVT_KEY_UP, wxKeyEventHandler(FileEditor::OnKeyUp), nullptr, this);
 }
 
@@ -73,13 +70,17 @@ void FileEditor::SetTopWindowTitle(const wxString& filename)
 	wxString buf(topWindow->GetLabel());
 	buf = buf.substr(0, buf.Find(')') + 1) + wxT(" ") ;
 
-	topWindow->SetLabel(buf + filename);
+	wxFileName fname(filename);
+
+	topWindow->SetLabel(buf + fname.GetFullName());
 }
 
 void FileEditor::LoadFile(const wxString& filename)
 {
 	// TODO check for errors!
 	this->filename = filename;
+	editor->SetReadOnly(false);
+	editor->ClearAll();
 	editor->LoadFile(filename);
 	editor->SetReadOnly(isReadOnly);
 
@@ -131,10 +132,14 @@ void FileEditor::OnKeyDown(wxKeyEvent &event)
 {
 	if (event.ControlDown()) {
 		if ((event.GetKeyCode() == 's' || event.GetKeyCode() == 'S')) {
-			wxMessageBox(wxT("Save file"));
-			// TODO call SaveFile() method 
-		}
+			SaveFile();
+			return;
+		} else if ((event.GetKeyCode() == 'r' || event.GetKeyCode() == 'R')) {
+			ResetFile();
+			return;
+		} 
 	}
+	event.Skip();
 }
 
 void FileEditor::Undo()
