@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/frame.h>
 #include <wx/toolbar.h>
+#include "ServiceManager.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ public:
 	void OnToolbarClick(wxCommandEvent& event);
 	void EnableTool(int toolid, bool enable);
 	void ShowFilesChangedText(bool flag);
-	bool UpdateServerButtons();
+	bool UpdateServerButtons(ServiceManager* serviceManager);
 };
 
 #endif

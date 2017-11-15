@@ -46,6 +46,7 @@ public:
 	void Paste();
 
 	void LoadFile(const wxString& filename);
+	wxString GetFilename();
 	bool SaveFile();
 	void ResetFile();
 

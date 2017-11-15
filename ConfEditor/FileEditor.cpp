@@ -75,6 +75,16 @@ void FileEditor::SetTopWindowTitle(const wxString& filename)
 	topWindow->SetLabel(buf + fname.GetFullName());
 }
 
+wxString FileEditor::GetFilename()
+{
+	if (filename.length() > 0) {
+		wxFileName fn_cfg(filename);
+		return fn_cfg.GetFullName();
+	} else {
+		return filename;
+	}
+}
+
 void FileEditor::LoadFile(const wxString& filename)
 {
 	this->filename = filename;
@@ -123,7 +133,11 @@ void FileEditor::ResetFile()
 		} else if (!fn_bak.FileExists() && !fn_cfg.FileExists()) {
 			wxMessageBox("File '" + fn_cfg.GetFullPath() + "' does not exist.", "Error", wxOK, this);
 		} else if (fn_bak.FileExists()) {
-			editor->LoadFile(fn_bak.GetFullPath());
+			bool bakFileRenamed = ::wxRenameFile(fn_bak.GetFullPath(), fn_cfg.GetFullPath(), true);
+			if (!bakFileRenamed) {
+				wxMessageBox("Can't copy '" + fn_bak.GetFullPath() + "' content to '" + fn_cfg.GetFullPath() + "'", "Error", wxOK, this); 
+			}
+			editor->LoadFile(fn_cfg.GetFullPath());
 		} else {
 			wxMessageBox("Backup file '" + fn_bak.GetFullPath() + "' does not exist.", "Error", wxOK, this); 
 		}

@@ -1,4 +1,7 @@
 #include "MainWindow.h"
+#include <wx/dialog.h>
+#include <thread>
+#include <chrono>
 
 MainWindow::MainWindow(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
 	: wxFrame(parent, id, title, pos, size, style, name)
@@ -17,7 +20,7 @@ void MainWindow::OnClose(wxCloseEvent& event)
 	if (currentLabel.EndsWith("*")) {
 		int res = wxMessageBox(wxT("Do you want to save changes before exit?"), "Warning", wxYES_NO);
 		if (res == wxYES) {
-			fileeditor->SaveFile();
+			OnSave(wxCommandEvent());
 		}
 	}
 	event.Skip();
@@ -50,9 +53,12 @@ void MainWindow::FileOpen(wxListEvent& event)
 {
 	wxString currentLabel = this->GetLabel();
 	if (currentLabel.EndsWith("*")) {
-		int res = wxMessageBox(wxT("Do you want to save changes for '") + event.GetText() + "'?", "Warning", wxYES_NO);
-		if (res == wxYES) {
-			fileeditor->SaveFile();
+		wxString currentFilename = fileeditor->GetFilename();
+		if (currentFilename.length() > 0) {
+			int res = wxMessageBox(wxT("Do you want to save changes for '") + currentFilename + "'?", "Warning", wxYES_NO);
+			if (res == wxYES) {
+				OnSave(wxCommandEvent());
+			}
 		}
 	}
 	fileeditor->LoadFile(*(wxString *)event.GetData());
@@ -76,6 +82,11 @@ void MainWindow::SetFileEditor(FileEditor* fileeditor)
 void MainWindow::SetToolbar(Toolbar* toolbar)
 {
 	this->toolbar = toolbar;
+}
+
+void MainWindow::SetServiceManager(ServiceManager* serviceManager)
+{
+	this->serviceManager = serviceManager;
 }
 
 void MainWindow::SendFileEditorCtrlChar(char ch)
@@ -116,16 +127,65 @@ void MainWindow::OnPaste(wxCommandEvent& event) {
 	fileeditor->Paste();
 }
 
+void MainWindow::ProgressUpdateThread(wxProgressDialog* dialog)
+{
+	int progress = 0;
+	for (int i = 0; i < 100; i++)
+	{
+		std::this_thread::sleep_for(std::chrono::milliseconds(120)); // it should be 300 for 30s default service startup time, but for user expirience it is better to be lower
+		if (progressBarUpdateStop) {
+			return;
+		}
+		dialog->Update(i);
+	}
+}
+
+void MainWindow::StartServiceThread(wxProgressDialog* startDialog)
+{
+	if (!serviceManager->startService()) {
+		wxMessageBox(wxT("Service startup error/timeout"));
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	startDialog->Close();
+}
+
+void MainWindow::StopServiceThread(wxProgressDialog* stopDialog)
+{
+	if (!serviceManager->StopService()) {
+		wxMessageBox(wxT("Service stopping error/timeout"));
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	stopDialog->Close();
+}
+
+void MainWindow::OnStartStopProcessing(wxCommandEvent& event, bool setFilesChanged, wxString dialogTitle, wxString dialogText, void (MainWindow::*threadMethod)(wxProgressDialog*))
+{
+	std::lock_guard<std::mutex> guard(serviceManager->m);
+	if (setFilesChanged) {
+		SetFilesChanged(false);
+	}
+	wxProgressDialog* dialog = new wxProgressDialog(dialogTitle, dialogText, 100, this, wxPD_APP_MODAL);
+	std::thread t1(threadMethod, this, dialog);
+	progressBarUpdateStop = false;
+	std::thread t2(&MainWindow::ProgressUpdateThread, this, dialog);
+	dialog->CenterOnParent();
+	dialog->ShowModal();
+	t1.join();
+	progressBarUpdateStop = true;
+	t2.join();
+	dialog->Destroy();
+	toolbar->UpdateServerButtons(serviceManager);
+}
+
 void MainWindow::OnStart(wxCommandEvent& event) {
-	SetFilesChanged(false);
-	//wxMessageBox(wxT("Start server"));
+	OnStartStopProcessing(event, true, "Service start", "Service is starting now", &MainWindow::StartServiceThread);
 }
 
 void MainWindow::OnStop(wxCommandEvent& event) {
-	//wxMessageBox(wxT("Stop server"));
+	OnStartStopProcessing(event, false, "Service stop", "Service is stopping now", &MainWindow::StopServiceThread);
 }
 
 void MainWindow::OnRestart(wxCommandEvent& event) {
-	SetFilesChanged(false);
-	//wxMessageBox(wxT("Restart server"));
+	OnStop(event);
+	OnStart(event);
 }

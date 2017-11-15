@@ -9,6 +9,8 @@
 #include "FileList.h"
 #include "FileEditor.h"
 #include "MainWindow.h"
+#include "ServiceManager.h"
+#include "ToolbarTimer.h"
 
 using namespace std;
 
@@ -21,6 +23,8 @@ private:
 	Toolbar* toolbar;
 	FileList* filelist;
 	FileEditor* fileeditor;
+	ServiceManager* serviceManager;
+	ToolbarTimer* toolbarTimer;
 
 	wxString cwd;
 	bool isAdminMode;

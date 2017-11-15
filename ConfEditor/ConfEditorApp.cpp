@@ -21,7 +21,13 @@ bool ConfEditorApp::OnInit()
 	//toolbar = new Toolbar(window->CreateToolBar(wxTB_DEFAULT_STYLE, wxID_ANY, wxT("Toolbar")), wxT("Toolbar"), window);
 	toolbar = new Toolbar(window, wxT("Toolbar"));
 
-	toolbar->UpdateServerButtons();
+	serviceManager = new ServiceManager();
+	serviceManager->LoadServiceName();
+	if (serviceManager->OpenManagerAndService()) {
+		toolbar->UpdateServerButtons(serviceManager);
+		toolbarTimer = new ToolbarTimer(toolbar, serviceManager);
+		toolbarTimer->StartTimer();
+	}
 
 	wxBoxSizer* splitterSizer = new wxBoxSizer(wxVERTICAL);
 	splitterSizer->Add((wxWindow*)toolbar, 0, wxEXPAND | wxALIGN_TOP);
@@ -34,6 +40,7 @@ bool ConfEditorApp::OnInit()
 	fileeditor->SetReadOnlyMode(!isAdminMode);
 	window->SetFileEditor(fileeditor);
 	window->SetToolbar(toolbar);
+	window->SetServiceManager(serviceManager);
 	window->SetFilesChanged(false);
 
 	splitter->SplitVertically(filelist, fileeditor, window->GetRect().GetWidth()*0.1);

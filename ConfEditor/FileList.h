@@ -18,6 +18,7 @@ public:
 	void ItemDoubleclick(wxListEvent& event);
 	void ItemSelected(wxListEvent& event);
 	void SetWidthToMatchMaxLen();
+	void SetWidth(int width);
 };
 
 #endif

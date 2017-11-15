@@ -171,7 +171,9 @@
     <ClCompile Include="FileList.cpp" />
     <ClCompile Include="LineTokenizer.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="ServiceManager.cpp" />
     <ClCompile Include="Toolbar.cpp" />
+    <ClCompile Include="ToolbarTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BitmapHelper.h" />
@@ -184,8 +186,10 @@
     <ClInclude Include="LineTokenizer.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ServiceManager.h" />
     <ClInclude Include="Token.h" />
     <ClInclude Include="Toolbar.h" />
+    <ClInclude Include="ToolbarTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="icons\bitmap1.bmp" />

@@ -3,6 +3,7 @@
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/splitter.h>
+#include <wx/settings.h>
 
 FileList::FileList(const wxString& title, wxWindow* parent) : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL)
 {
@@ -19,6 +20,7 @@ FileList::FileList(const wxString& title, wxWindow* parent) : wxPanel(parent, wx
 	item_list->InsertColumn(0, col0);
 
 	sizer->Add(item_list, 1, wxEXPAND | wxALL);
+
 	this->SetSizer(sizer);
 
 	this->Connect(wxEVT_ANY, wxEVT_SIZE, wxSizeEventHandler(FileList::OnResize));
@@ -40,7 +42,7 @@ void FileList::SetWidthToMatchMaxLen()
 		}
 	}
 
-	((wxSplitterWindow *)this->GetParent())->SetSashPosition(maxItemWidth);
+	((wxSplitterWindow *)this->GetParent())->SetSashPosition(maxItemWidth + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X));
 }
 
 void FileList::ItemSelected(wxListEvent& event)
@@ -55,10 +57,15 @@ void FileList::ItemDoubleclick(wxListEvent& event)
 	event.ShouldPropagate();
 }
 
+void FileList::SetWidth(int width)
+{
+	item_list->SetColumnWidth(0, width);
+	item_list->Refresh();
+}
+
 void FileList::OnResize(wxSizeEvent& event)
 {
-	item_list->SetColumnWidth(0, event.GetSize().GetWidth());
-	item_list->Refresh();
+	SetWidth(event.GetSize().GetWidth());
 	event.Skip();
 }
 
@@ -83,8 +90,8 @@ void FileList::LoadFilesFromDir(const wxString& directory)
 			item_list->InsertItem(item);
 			//item_list->SetItem(i, 0, fileName.GetFullName());
 		}
-		item_list->SetColumnWidth(0, item_list->GetSize().GetWidth());
-		item_list->Refresh();
+		//item_list->SetColumnWidth(0, item_list->GetSize().GetWidth());
+		//item_list->Refresh();
 	} else {
 		//TODO show message and log it
 	}

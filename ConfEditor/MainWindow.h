@@ -7,12 +7,17 @@
 #include <wx/listctrl.h>
 #include "FileEditor.h"
 #include "Toolbar.h"
+#include "ServiceManager.h"
+#include <wx/progdlg.h>
+#include <condition_variable>
 
 class MainWindow : public wxFrame
 {
 	FileEditor* fileeditor;
 	Toolbar* toolbar;
+	ServiceManager* serviceManager;
 	bool filesChanged;
+	bool progressBarUpdateStop;
 
 public:
 	MainWindow(wxWindow *parent,
@@ -25,6 +30,7 @@ public:
 
 	void SetFileEditor(FileEditor* fileeditor);
 	void SetToolbar(Toolbar* toolbar);
+	void SetServiceManager(ServiceManager* serviceManager);
 	void FileOpen(wxListEvent& event);
 	void SetFilesChanged(const bool& flag);
 	void SendFileEditorCtrlChar(char ch);
@@ -37,8 +43,12 @@ public:
 	void OnCopy(wxCommandEvent& event);
 	void OnPaste(wxCommandEvent& event);
 
+	void OnStartStopProcessing(wxCommandEvent& event, bool setFilesChanged, wxString dialogTitle, wxString dialogText, void (MainWindow::*threadMethod)(wxProgressDialog*));
 	void OnStart(wxCommandEvent& event);
+	void StartServiceThread(wxProgressDialog* startDialog);
+	void ProgressUpdateThread(wxProgressDialog* dialog);
 	void OnStop(wxCommandEvent& event);
+	void StopServiceThread(wxProgressDialog* startDialog);
 	void OnRestart(wxCommandEvent& event);
 
 	void ItemDoubleclick(wxListEvent& event);

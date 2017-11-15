@@ -1,7 +1,6 @@
 #include "Toolbar.h"
 #include "BitmapHelper.h"
 #include "resource.h"
-#include <wx/msw/registry.h>
 
 Toolbar::Toolbar(wxWindow* parent, const wxString& title) : wxPanel(parent, wxID_ANY)
 {
@@ -66,62 +65,22 @@ Toolbar::Toolbar(wxWindow* parent, const wxString& title) : wxPanel(parent, wxID
 	SetSizer(vbox);
 }
 
-bool Toolbar::UpdateServerButtons()
+bool Toolbar::UpdateServerButtons(ServiceManager* serviceManager)
 {
-	wxRegKey key(wxRegKey::HKLM, "SOFTWARE\\WOW6432Node\\NetLatency\\SwitchMonitor");
-	wxString serviceName;
-	key.QueryValue("ServiceName", serviceName);
-
-	//wxMessageBox(wxT("Service name: ") + serviceName);
-
-	SC_HANDLE theService, scm;
-	SERVICE_STATUS_PROCESS ssStatus;
-	DWORD dwBytesNeeded;
-
-	scm = OpenSCManager(nullptr, nullptr, SC_MANAGER_ENUMERATE_SERVICE);
-	if (!scm) {
-		//wxMessageBox(wxT("OpenSCManager failure"));
-		return false;
-	}
-
-	theService = OpenService(scm, serviceName, SERVICE_QUERY_STATUS);
-	if(!theService) {
-		DWORD lastError = GetLastError();
-		if (lastError == ERROR_ACCESS_DENIED) {
-			//wxMessageBox(wxT("ERROR_ACCESS_DENIED"));
-		} else if (lastError == ERROR_INVALID_HANDLE) {
-			//wxMessageBox(wxT("ERROR_INVALID_HANDLE"));
-		} else if (lastError == ERROR_INVALID_NAME) {
-			//wxMessageBox(wxT("ERROR_INVALID_NAME"));
-		} else if (lastError == ERROR_SERVICE_DOES_NOT_EXIST) {
-			//wxMessageBox(wxT("ERROR_SERVICE_DOES_NOT_EXIST"));
+	if (serviceManager->QueuryServiceStatus()) {
+		DWORD currentState = serviceManager->GetServiceCurrentState();
+		if (currentState == SERVICE_RUNNING) {
+			toolbar->EnableTool(wxID_FILE1, false);
+			toolbar->EnableTool(wxID_FILE2, true);
+			toolbar->EnableTool(wxID_FILE3, true);
+		} else {
+			toolbar->EnableTool(wxID_FILE1, true);
+			toolbar->EnableTool(wxID_FILE2, false);
+			toolbar->EnableTool(wxID_FILE3, false);
 		}
-		CloseServiceHandle(scm);
-		return false;
+		return true;
 	}
-
-	auto result = QueryServiceStatusEx(theService, SC_STATUS_PROCESS_INFO, reinterpret_cast<LPBYTE>(&ssStatus), sizeof(SERVICE_STATUS_PROCESS), &dwBytesNeeded);
-
-	CloseServiceHandle(theService);
-	CloseServiceHandle(scm);
-
-	if(result == 0) {
-		//wxMessageBox(wxT("QueryServiceStatusEx failure"));
-		return false;
-	}
-
-	if (ssStatus.dwCurrentState == SERVICE_RUNNING) {
-		//wxMessageBox(wxT("Service is running"));
-		toolbar->EnableTool(wxID_FILE1, false);
-		toolbar->EnableTool(wxID_FILE2, true);
-		toolbar->EnableTool(wxID_FILE3, true);
-	} else {
-		//wxMessageBox(wxT("Service is not running"));
-		toolbar->EnableTool(wxID_FILE1, true);
-		toolbar->EnableTool(wxID_FILE2, false);
-		toolbar->EnableTool(wxID_FILE3, false);
-	}
-	return true;
+	return false;
 }
 
 void Toolbar::ShowFilesChangedText(bool flag)
