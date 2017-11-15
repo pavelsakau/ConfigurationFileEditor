@@ -178,7 +178,6 @@
   <ItemGroup>
     <ClInclude Include="BitmapHelper.h" />
     <ClInclude Include="ConfEditorApp.h" />
-    <ClInclude Include="ConfEditorLexer.h" />
     <ClInclude Include="FileEditor.h" />
     <ClInclude Include="FileEditorLoader.h" />
     <ClInclude Include="FileLineReader.h" />

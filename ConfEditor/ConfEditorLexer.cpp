@@ -79,8 +79,8 @@ static const char *const confEditorWordLists[] = {
 	0,
 };
 
-struct OptionSetCPP : public OptionSet<OptionsConfEditor> {
-	OptionSetCPP() {
+struct OptionSetConfEditor : public OptionSet<OptionsConfEditor> {
+	OptionSetConfEditor() {
 		DefineWordListSets(confEditorWordLists);
 	}
 };
@@ -99,7 +99,7 @@ class ConfEditorLexer : public ILexer {
 	WordList ppDefinitions;
 	std::map<std::string, std::string> preprocessorDefinitionsStart;
 	OptionsConfEditor options;
-	OptionSetCPP osCPP;
+	OptionSetConfEditor osCPP;
 	SparseState<std::string> rawStringTerminators;
 	enum { activeFlag = 0x40 };
 public:

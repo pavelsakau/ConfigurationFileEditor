@@ -28,6 +28,16 @@ FileList::FileList(const wxString& title, wxWindow* parent) : wxPanel(parent, wx
 	this->Connect(wxEVT_ANY, wxEVT_LIST_ITEM_SELECTED, wxListEventHandler(FileList::ItemSelected));
 }
 
+void FileList::HideHorizontalScrollbar()
+{
+	//wxMessageBox(wxString::Format("%d %d %d %d", item_list->HasScrollbar(wxVERTICAL), item_list->HasScrollbar(wxHORIZONTAL), this->HasScrollbar(wxVERTICAL), this->HasScrollbar(wxHORIZONTAL)));
+	//item_list->SetScrollbar(wxVERTICAL, 0, 0, 0);
+	//item_list->SetScrollbar(wxHORIZONTAL, 0, 0, 0);
+
+	//this->SetScrollbar(wxVERTICAL, 0, 0, 0);
+	//this->SetScrollbar(wxHORIZONTAL, 0, 0, 0);
+}
+
 void FileList::SetWidthToMatchMaxLen()
 {
 	wxClientDC dc(this);
@@ -65,14 +75,13 @@ void FileList::SetWidth(int width)
 
 void FileList::OnResize(wxSizeEvent& event)
 {
-	SetWidth(event.GetSize().GetWidth());
+	SetWidth(event.GetSize().GetWidth() - wxSystemSettings::GetMetric(wxSYS_VSCROLL_X));
 	event.Skip();
 }
 
 void FileList::LoadFilesFromDir(const wxString& directory)
 {
 	if (!item_list->DeleteAllItems()) {
-		// TODO show message and log it
 	}
 	files.Clear();
 	size_t filesFound = wxDir::GetAllFiles(directory, &files, wxT("*.cfg"), wxDIR_FILES);
@@ -88,12 +97,9 @@ void FileList::LoadFilesFromDir(const wxString& directory)
 			item.SetData(&files[i]);
 
 			item_list->InsertItem(item);
-			//item_list->SetItem(i, 0, fileName.GetFullName());
 		}
-		//item_list->SetColumnWidth(0, item_list->GetSize().GetWidth());
-		//item_list->Refresh();
 	} else {
-		//TODO show message and log it
+		// no files found?
 	}
 }
 

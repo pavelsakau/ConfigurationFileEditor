@@ -51,17 +51,6 @@ bool ServiceManager::OpenServiceWithAccess(DWORD dwDesiredAccess)
 		theService = OpenService(scm, serviceName, dwDesiredAccess);
 		if(!theService) {
 			//wxMessageBox(wxT("OpenService failure"));
-			//DWORD lastError = GetLastError();
-			//if (lastError == ERROR_ACCESS_DENIED) {
-			//	wxMessageBox(wxT("ERROR_ACCESS_DENIED"));
-			//} else if (lastError == ERROR_INVALID_HANDLE) {
-			//	wxMessageBox(wxT("ERROR_INVALID_HANDLE"));
-			//} else if (lastError == ERROR_INVALID_NAME) {
-			//	wxMessageBox(wxT("ERROR_INVALID_NAME"));
-			//} else if (lastError == ERROR_SERVICE_DOES_NOT_EXIST) {
-			//	wxMessageBox(wxT("ERROR_SERVICE_DOES_NOT_EXIST"));
-			//}
-			//wxMessageBox(wxString::Format("error code: %i", lastError));
 			CloseScmManager();
 			return false;
 		} 
@@ -96,8 +85,7 @@ bool ServiceManager::WaitForState(DWORD waitFor, DWORD startState, DWORD timeout
 			}
 			if (ssp.dwCurrentState == waitFor)
 				break;
-			if (GetTickCount() - dwStartTime > timeout)
-			{
+			if (GetTickCount() - dwStartTime > timeout) {
 				//wxMessageBox(wxT("StopService timeout"));
 				return false;
 			}
@@ -174,8 +162,7 @@ bool ServiceManager::StopService()
 		if (!StopDependentServices()) {
 			return false;
 		}
-		if (!ControlService(theService, SERVICE_CONTROL_STOP, (LPSERVICE_STATUS) &ssp))
-		{
+		if (!ControlService(theService, SERVICE_CONTROL_STOP, (LPSERVICE_STATUS) &ssp))	{
 			//wxMessageBox(wxT("StopService failure"));
 			return false;
 		} 

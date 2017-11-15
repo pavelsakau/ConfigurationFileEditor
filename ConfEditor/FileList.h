@@ -19,6 +19,7 @@ public:
 	void ItemSelected(wxListEvent& event);
 	void SetWidthToMatchMaxLen();
 	void SetWidth(int width);
+	void HideHorizontalScrollbar();
 };
 
 #endif

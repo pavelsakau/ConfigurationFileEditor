@@ -6,7 +6,6 @@ using namespace std;
 
 vector<wxString> FileLineReader::ReadFile(wxString filename)
 {
-	//TODO error processing here!
 	vector<wxString> filelines;
 
 	ifstream file(filename.ToStdString());
@@ -21,7 +20,6 @@ vector<wxString> FileLineReader::ReadFile(wxString filename)
 
 wxString FileLineReader::ReadFileContent(wxString filename)
 {
-	//TODO error processing here!
 	std::ifstream ifs(filename.ToStdString());
 	wxString fileContent(string(istreambuf_iterator<char>(ifs), (istreambuf_iterator<char>())));
 	ifs.close();

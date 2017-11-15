@@ -5,6 +5,7 @@
 #include <shlobj.h>
 #include <shlwapi.h>
 #include <objbase.h>
+#include <wx/settings.h>
 using namespace std;
 
 bool ConfEditorApp::OnInit()
@@ -16,9 +17,12 @@ bool ConfEditorApp::OnInit()
 	ChooseAppMode();
 
 	wxInitAllImageHandlers();
+
 	wxString title = isAdminMode ? wxT("Configuration editor (Administrator)") : wxT("Configuration editor (View-only)");
-	window = new MainWindow(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(1250, 600));
-	//toolbar = new Toolbar(window->CreateToolBar(wxTB_DEFAULT_STYLE, wxID_ANY, wxT("Toolbar")), wxT("Toolbar"), window);
+
+	int desktopWidth = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) ;
+	int desktopHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) ;
+	window = new MainWindow(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(desktopWidth*0.8, desktopHeight*0.8));
 	toolbar = new Toolbar(window, wxT("Toolbar"));
 
 	serviceManager = new ServiceManager();
@@ -49,6 +53,11 @@ bool ConfEditorApp::OnInit()
 
 	filelist->LoadFilesFromDir(cwd);
 	filelist->SetWidthToMatchMaxLen();
+	filelist->HideHorizontalScrollbar();
+	//splitter->GetWindow1()->SetScrollbar(wxVERTICAL, 0, 0, 0);
+	//splitter->GetWindow1()->SetScrollbar(wxHORIZONTAL, 0, 0, 0);
+	//splitter->GetWindow2()->SetScrollbar(wxVERTICAL, 0, 0, 0);
+	//splitter->GetWindow2()->SetScrollbar(wxHORIZONTAL, 0, 0, 0);
 
 	window->Connect(wxID_SAVE, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnSave));
 	window->Connect(wxID_RESET, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(MainWindow::OnReset));
@@ -84,9 +93,7 @@ void ConfEditorApp::ChooseAppMode()
 		parameters = "AskForAdministrator";
 		HINSTANCE result = ShellExecute(NULL, wxT("runas"), this->argv[0], parameters, cwd, SW_NORMAL);
 		if (result > (HINSTANCE)32) {
-			// User accepted UAC prompt (gave permission).
-			// The unprivileged parent should wait for
-			// the privileged child to finish.
+			// User accepted UAC prompt (gave permission). The unprivileged parent should wait for the privileged child to finish.
 			this->Exit();
 		} else {
 			// User rejected UAC prompt.

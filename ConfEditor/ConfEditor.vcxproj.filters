@@ -83,9 +83,6 @@
     <ClInclude Include="FileEditorLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConfEditorLexer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
