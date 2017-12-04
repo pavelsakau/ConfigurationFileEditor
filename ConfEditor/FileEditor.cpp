@@ -8,6 +8,7 @@
 #include "FileLineReader.h"
 #include <wx/filename.h>
 #include <wx/filefn.h>
+#include <Scintilla.h>
 
 using namespace std;
 
@@ -28,6 +29,7 @@ FileEditor::FileEditor(const wxString& title, wxWindow* parent, wxWindow* topWin
 
 	editor->StyleSetFont(wxSTC_STYLE_DEFAULT, DefaultFont);
 	editor->SetFont(DefaultFont);
+	editor->SetScrollWidthTracking(true);
 
 	Catalogue::AddLexerModule(&lmConfEditor);
 
@@ -92,6 +94,18 @@ void FileEditor::LoadFile(const wxString& filename)
 	editor->ClearAll();
 	editor->LoadFile(filename);
 	editor->SetReadOnly(isReadOnly);
+
+	// set horizontal scroll length as per maximum line length
+	int lines_count = editor->GetNumberOfLines();
+	int max = 0;
+	for (int i = 0; i < lines_count; i++) {
+		int line_len = editor->GetLineEndPosition(i);
+		int x = editor->SendMsg(SCI_POINTXFROMPOSITION, 0, line_len);
+		if (x > max) {
+			max = x;
+		}
+	}
+	editor->SendMsg(SCI_SETSCROLLWIDTH, max > 1 ? max : 1, 0);
 
 	SetTopWindowTitle(filename);
 }
