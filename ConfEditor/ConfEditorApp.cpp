@@ -1,5 +1,7 @@
 #include "ConfEditorApp.h"
 #include "FileEditorLoader.h"
+#include "BitmapHelper.h"
+#include "resource.h"
 #include <vector>
 #include <wx/listctrl.h>
 #include <shlobj.h>
@@ -23,6 +25,9 @@ bool ConfEditorApp::OnInit()
 	int desktopWidth = wxSystemSettings::GetMetric(wxSYS_SCREEN_X) ;
 	int desktopHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) ;
 	window = new MainWindow(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(desktopWidth*0.8, desktopHeight*0.8));
+
+	window->SetIcon(wxIcon(BitmapHelper::GetResourceById(APPLICATIONICON), wxBITMAP_TYPE_ICO_RESOURCE));
+
 	toolbar = new Toolbar(window, wxT("Toolbar"));
 
 	serviceManager = new ServiceManager();

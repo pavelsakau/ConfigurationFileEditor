@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icons\bitmap1.bmp" />
+    <Image Include="icons\ConfigEditor.ico" />
     <Image Include="icons\Copy.ico" />
     <Image Include="icons\Custom-Icon-Save.ico" />
     <Image Include="icons\Cut.ico" />
